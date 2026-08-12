@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Lesson Entry</title>
+<style>
+  :root {
+    --brand: #2f6f4f;
+    --brand-dark: #234f38;
+    --bg: #f4f6f5;
+    --card: #ffffff;
+    --text: #1c2b23;
+    --muted: #6b7a72;
+    --border: #e0e5e2;
+    --danger: #c0392b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding-bottom: 40px;
+  }
+  header {
+    background: var(--brand);
+    color: #fff;
+    padding: 18px 20px 16px;
+    text-align: center;
+  }
+  header h1 { margin: 0; font-size: 1.15rem; font-weight: 600; }
+  header p { margin: 4px 0 0; font-size: 0.8rem; opacity: 0.9; }
+  main {
+    max-width: 480px;
+    margin: 16px auto;
+    padding: 0 16px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 14px;
+  }
+  label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 5px;
+    margin-top: 14px;
+  }
+  label:first-child { margin-top: 0; }
+  select, input[type="text"], input[type="number"], input[type="date"], textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    font-size: 1rem;
+    background: #fff;
+    color: var(--text);
+    font-family: inherit;
+  }
+  textarea { min-height: 70px; resize: vertical; }
+  .row2 { display: flex; gap: 10px; }
+  .row2 > div { flex: 1; }
+  button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 10px;
+    background: var(--brand);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:active { background: var(--brand-dark); }
+  button:disabled { opacity: 0.6; }
+  #status {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 0.88rem;
+    min-height: 18px;
+  }
+  #status.ok { color: var(--brand); }
+  #status.err { color: var(--danger); }
+  .hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  footer {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 24px;
+    padding: 0 20px;
+  }
+  footer a { color: var(--muted); }
+  .config-banner {
+    background: #fff4e5;
+    border: 1px solid #f0c37a;
+    color: #7a5200;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    margin-bottom: 14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="schoolName">Daily Lesson Entry</h1>
+  <p>Log today's lesson &amp; attendance in a few taps</p>
+</header>
+
+<main>
+  <div id="configBanner" class="config-banner" style="display:none;">
+    Backend URL not set yet. Edit the <code>APPS_SCRIPT_URL</code> constant near the top of
+    <code>app.js</code>-equivalent script block in this file.
+  </div>
+
+  <div class="card">
+    <label for="teacher">Teacher</label>
+    <select id="teacher"><option value="">Select teacher…</option></select>
+
+    <div class="row2">
+      <div>
+        <label for="className">Class</label>
+        <select id="className"><option value="">Select…</option></select>
+      </div>
+      <div>
+        <label for="section">Section</label>
+        <select id="section"><option value="">Select…</option></select>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div>
+        <label for="period">Period</label>
+        <select id="period"><option value="">Select…</option></select>
+      </div>
+      <div>
+        <label for="subject">Subject</label>
+        <select id="subject"><option value="">Select…</option></select>
+      </div>
+    </div>
+
+    <label for="date">Date</label>
+    <input type="date" id="date" />
+
+    <label for="topic">Topic / lesson taught</label>
+    <textarea id="topic" placeholder="e.g. Fractions – addition of unlike denominators"></textarea>
+
+    <div class="row2">
+      <div>
+        <label for="present">Present</label>
+        <input type="number" id="present" min="0" inputmode="numeric" placeholder="0" />
+      </div>
+      <div>
+        <label for="absent">Absent</label>
+        <input type="number" id="absent" min="0" inputmode="numeric" placeholder="0" />
+      </div>
+    </div>
+    <div class="hint" id="totalHint"></div>
+
+    <label for="remarks">Remarks (optional)</label>
+    <input type="text" id="remarks" placeholder="Anything the principal should know" />
+
+    <button id="submitBtn">Submit entry</button>
+    <div id="status"></div>
+  </div>
+</main>
+
+<footer>
+  <div id="siteFooterName">Lesson Tracker</div>
+  © <span id="year"></span> — a property of Zera Technologies. All rights reserved.<br />
+  Designed and developed by <a href="https://zeratech.io/" target="_blank" rel="noopener noreferrer">Zera Technologies</a>
+</footer>
+
+<script>
+  // ---------------------------------------------------------------
+  // CONFIG: paste your deployed Apps Script Web App URL here.
+  // (Deploy > New deployment > Web app > Execute as: Me, Access: Anyone)
+  // ---------------------------------------------------------------
+  const APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const els = {
+    teacher: document.getElementById('teacher'),
+    className: document.getElementById('className'),
+    section: document.getElementById('section'),
+    period: document.getElementById('period'),
+    subject: document.getElementById('subject'),
+    date: document.getElementById('date'),
+    topic: document.getElementById('topic'),
+    present: document.getElementById('present'),
+    absent: document.getElementById('absent'),
+    remarks: document.getElementById('remarks'),
+    submitBtn: document.getElementById('submitBtn'),
+    status: document.getElementById('status'),
+    totalHint: document.getElementById('totalHint'),
+    schoolName: document.getElementById('schoolName'),
+    configBanner: document.getElementById('configBanner'),
+  };
+
+  // Default date to today, editable for backfilling a missed entry.
+  els.date.value = new Date().toISOString().slice(0, 10);
+
+  function fillSelect(select, values) {
+    select.innerHTML = '<option value="">Select…</option>' +
+      values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, s => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[s]));
+  }
+
+  function updateTotalHint() {
+    const p = Number(els.present.value) || 0;
+    const a = Number(els.absent.value) || 0;
+    els.totalHint.textContent = (p || a) ? `Total in class: ${p + a}` : '';
+  }
+  els.present.addEventListener('input', updateTotalHint);
+  els.absent.addEventListener('input', updateTotalHint);
+
+  async function loadConfig() {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('PASTE_YOUR') === 0) {
+      els.configBanner.style.display = 'block';
+      return;
+    }
+    try {
+      const res = await fetch(`${APPS_SCRIPT_URL}?action=config`);
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Failed to load config');
+      fillSelect(els.teacher, data.teachers);
+      fillSelect(els.className, data.classes);
+      fillSelect(els.section, data.sections);
+      fillSelect(els.period, data.periods);
+      fillSelect(els.subject, data.subjects);
+      if (data.schoolName) {
+        els.schoolName.textContent = data.schoolName;
+        document.title = data.schoolName + ' — Lesson Entry';
+      }
+    } catch (err) {
+      els.status.className = 'err';
+      els.status.textContent = 'Could not load form options. Check your internet connection.';
+    }
+  }
+
+  async function submitEntry() {
+    const payload = {
+      teacher: els.teacher.value,
+      className: els.className.value,
+      section: els.section.value,
+      period: els.period.value,
+      subject: els.subject.value,
+      date: els.date.value,
+      topic: els.topic.value.trim(),
+      present: els.present.value,
+      absent: els.absent.value,
+      remarks: els.remarks.value.trim(),
+    };
+
+    if (!payload.teacher || !payload.className || !payload.period || !payload.topic) {
+      els.status.className = 'err';
+      els.status.textContent = 'Please fill teacher, class, period and topic.';
+      return;
+    }
+
+    els.submitBtn.disabled = true;
+    els.status.className = '';
+    els.status.textContent = 'Submitting…';
+
+    try {
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        // text/plain avoids a CORS preflight against Apps Script.
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Save failed');
+
+      els.status.className = 'ok';
+      els.status.textContent = '✓ Entry saved. Thank you!';
+      els.topic.value = '';
+      els.present.value = '';
+      els.absent.value = '';
+      els.remarks.value = '';
+      updateTotalHint();
+    } catch (err) {
+      els.status.className = 'err';
+      els.status.textContent = 'Could not save. Check connection and try again.';
+    } finally {
+      els.submitBtn.disabled = false;
+    }
+  }
+
+  els.submitBtn.addEventListener('click', submitEntry);
+  loadConfig();
+</script>
+
+</body>
+</html>
