@@ -26,176 +26,475 @@
 <meta name="twitter:title" content="Shanti Kartik Global School — Lesson Entry" />
 <meta name="twitter:description" content="Log today's lesson and attendance in a few taps." />
 <meta name="twitter:image" content="https://school.zeratech.io/og-image.png" />
+
 <style>
   :root {
     --brand: #2f6f4f;
-    --brand-dark: #234f38;
-    --bg: #f4f6f5;
+    --brand-light: #3f8563;
+    --brand-dark: #1f4d36;
+    --accent: #c99a3c;
+    --bg-top: #eef6f1;
+    --bg-bottom: #f8f6f0;
     --card: #ffffff;
-    --text: #1c2b23;
+    --text: #16241c;
     --muted: #6b7a72;
-    --border: #e0e5e2;
+    --border: #e6ebe7;
     --danger: #c0392b;
+    --danger-bg: #fdecea;
+    --ok-bg: #eaf5ee;
+    --radius: 18px;
   }
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
+    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 55%);
     color: var(--text);
-    padding-bottom: 40px;
+    min-height: 100vh;
+    padding-bottom: 32px;
   }
-  header {
-    background: var(--brand);
+
+  /* ---------- Hero header ---------- */
+  header.hero {
+    position: relative;
+    background: linear-gradient(135deg, var(--brand-light) 0%, var(--brand) 45%, var(--brand-dark) 100%);
     color: #fff;
-    padding: 18px 20px 16px;
+    padding: 30px 20px 62px;
     text-align: center;
+    overflow: hidden;
+    border-radius: 0 0 28px 28px;
   }
-  header h1 { margin: 0; font-size: 1.15rem; font-weight: 600; }
-  header p { margin: 4px 0 0; font-size: 0.8rem; opacity: 0.9; }
+  header.hero::before,
+  header.hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  header.hero::before { width: 220px; height: 220px; top: -110px; right: -60px; }
+  header.hero::after { width: 160px; height: 160px; bottom: -90px; left: -40px; background: rgba(255,255,255,0.06); }
+  .kicker {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.28);
+    color: #fdf3da;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  header.hero h1 {
+    position: relative;
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  header.hero p.tag {
+    position: relative;
+    margin: 6px 0 0;
+    font-size: 0.85rem;
+    opacity: 0.92;
+  }
+
   main {
     max-width: 480px;
-    margin: 16px auto;
+    margin: -40px auto 0;
     padding: 0 16px;
+    position: relative;
   }
+
   .card {
     background: var(--card);
-    border-radius: 14px;
-    padding: 18px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border-radius: var(--radius);
+    padding: 22px 20px 24px;
+    box-shadow: 0 12px 30px -12px rgba(31, 77, 54, 0.28), 0 2px 8px rgba(22,36,28,0.05);
     margin-bottom: 14px;
   }
-  label {
-    display: block;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--muted);
-    margin-bottom: 5px;
-    margin-top: 14px;
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin: 20px 0 10px;
   }
-  label:first-child { margin-top: 0; }
-  select, input[type="text"], input[type="number"], input[type="date"], textarea {
+  .section-title:first-child { margin-top: 0; }
+  .section-title svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .field { margin-top: 14px; }
+  .field:first-of-type { margin-top: 0; }
+  .field label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .field label svg { width: 15px; height: 15px; color: var(--brand); flex-shrink: 0; }
+
+  .row2 { display: flex; gap: 10px; }
+  .row2 > .field { flex: 1; margin-top: 14px; }
+
+  .select-wrap { position: relative; }
+  .select-wrap svg.chevron {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+
+  select, input[type="text"], input[type="date"], textarea {
     width: 100%;
-    padding: 11px 12px;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    font-size: 1rem;
-    background: #fff;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 0.98rem;
+    background: #fbfdfc;
     color: var(--text);
     font-family: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    appearance: none;
+    -webkit-appearance: none;
   }
-  textarea { min-height: 70px; resize: vertical; }
-  .row2 { display: flex; gap: 10px; }
-  .row2 > div { flex: 1; }
-  button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 18px;
-    border: none;
+  select { padding-right: 38px; }
+  select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--brand-light);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(47,111,79,0.12);
+  }
+  textarea { min-height: 74px; resize: vertical; line-height: 1.4; }
+
+  /* ---------- Attendance stepper ---------- */
+  .attendance-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .stepper {
+    flex: 1;
+    background: #fbfdfc;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 12px 12px;
+    text-align: center;
+  }
+  .stepper .stepper-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .stepper.present .stepper-label { color: var(--brand); }
+  .stepper.absent .stepper-label { color: var(--danger); }
+  .stepper .stepper-label svg { width: 13px; height: 13px; }
+  .stepper-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .stepper-btn {
+    width: 34px;
+    height: 34px;
     border-radius: 10px;
-    background: var(--brand);
+    border: none;
+    background: #eef3f0;
+    color: var(--brand-dark);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stepper-btn:active { background: #dfe9e3; transform: scale(0.95); }
+  .stepper input[type="number"] {
+    -moz-appearance: textfield;
+    width: 100%;
+    border: none;
+    background: transparent;
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    padding: 0;
+  }
+  .stepper input[type="number"]::-webkit-outer-spin-button,
+  .stepper input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .stepper input:focus { outline: none; }
+
+  .total-chip {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--brand-dark);
+    background: var(--ok-bg);
+    border-radius: 999px;
+    padding: 7px 14px;
+    min-height: 32px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .total-chip.show { opacity: 1; transform: translateY(0); }
+  .total-chip svg { width: 14px; height: 14px; }
+
+  button#submitBtn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--brand-light), var(--brand-dark));
     color: #fff;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 8px 18px -8px rgba(31,77,54,0.55);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
   }
-  button:active { background: var(--brand-dark); }
-  button:disabled { opacity: 0.6; }
+  button#submitBtn:active { transform: translateY(1px) scale(0.99); }
+  button#submitBtn:disabled { opacity: 0.7; cursor: default; }
+  button#submitBtn svg { width: 18px; height: 18px; }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  button#submitBtn.loading .spinner { display: inline-block; }
+  button#submitBtn.loading .btn-icon,
+  button#submitBtn.loading .btn-text { opacity: 0.85; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   #status {
-    text-align: center;
     margin-top: 12px;
-    font-size: 0.88rem;
-    min-height: 18px;
-  }
-  #status.ok { color: var(--brand); }
-  #status.err { color: var(--danger); }
-  .hint {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-  footer {
+    font-size: 0.87rem;
+    font-weight: 600;
     text-align: center;
-    font-size: 0.72rem;
-    color: var(--muted);
-    margin-top: 24px;
-    padding: 0 20px;
+    border-radius: 12px;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.22s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
   }
-  footer a { color: var(--muted); }
+  #status.ok, #status.err {
+    max-height: 60px;
+    opacity: 1;
+    padding: 11px 12px;
+  }
+  #status.ok { background: var(--ok-bg); color: var(--brand-dark); }
+  #status.err { background: var(--danger-bg); color: var(--danger); }
+  #status svg { width: 16px; height: 16px; flex-shrink: 0; }
+
   .config-banner {
     background: #fff4e5;
     border: 1px solid #f0c37a;
     color: #7a5200;
-    padding: 10px 14px;
-    border-radius: 10px;
+    padding: 11px 14px;
+    border-radius: 12px;
     font-size: 0.8rem;
     margin-bottom: 14px;
+    line-height: 1.4;
   }
+
+  footer {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 22px;
+    padding: 0 20px;
+    line-height: 1.6;
+  }
+  footer a { color: var(--muted); }
 </style>
 </head>
 <body>
 
-<header>
+<header class="hero">
+  <span class="kicker">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg>
+    Lesson Tracker
+  </span>
   <h1 id="schoolName">Daily Lesson Entry</h1>
-  <p>Log today's lesson &amp; attendance in a few taps</p>
+  <p class="tag">Log today's lesson &amp; attendance in a few taps</p>
 </header>
 
 <main>
   <div id="configBanner" class="config-banner" style="display:none;">
-    Backend URL not set yet. Edit the <code>APPS_SCRIPT_URL</code> constant near the top of
-    <code>app.js</code>-equivalent script block in this file.
+    Backend URL not set yet. Edit the <code>APPS_SCRIPT_URL</code> constant near the top of the script block in this file.
   </div>
 
-  <div class="card">
-    <label for="teacher">Teacher</label>
-    <select id="teacher"><option value="">Select teacher…</option></select>
+  <form class="card" id="entryForm">
 
-    <div class="row2">
-      <div>
-        <label for="className">Class</label>
+    <div class="section-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Who &amp; what
+    </div>
+
+    <div class="field">
+      <label for="teacher">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Teacher
+      </label>
+      <div class="select-wrap">
+        <select id="teacher"><option value="">Select teacher…</option></select>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="className">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+        Class
+      </label>
+      <div class="select-wrap">
         <select id="className"><option value="">Select…</option></select>
-      </div>
-      <div>
-        <label for="section">Section</label>
-        <select id="section"><option value="">Select…</option></select>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
       </div>
     </div>
 
     <div class="row2">
-      <div>
-        <label for="period">Period</label>
-        <select id="period"><option value="">Select…</option></select>
+      <div class="field">
+        <label for="period">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          Period
+        </label>
+        <div class="select-wrap">
+          <select id="period"><option value="">Select…</option></select>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
       </div>
-      <div>
-        <label for="subject">Subject</label>
-        <select id="subject"><option value="">Select…</option></select>
-      </div>
-    </div>
-
-    <label for="date">Date</label>
-    <input type="date" id="date" />
-
-    <label for="topic">Topic / lesson taught</label>
-    <textarea id="topic" placeholder="e.g. Fractions – addition of unlike denominators"></textarea>
-
-    <div class="row2">
-      <div>
-        <label for="present">Present</label>
-        <input type="number" id="present" min="0" inputmode="numeric" placeholder="0" />
-      </div>
-      <div>
-        <label for="absent">Absent</label>
-        <input type="number" id="absent" min="0" inputmode="numeric" placeholder="0" />
+      <div class="field">
+        <label for="subject">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+          Subject
+        </label>
+        <div class="select-wrap">
+          <select id="subject"><option value="">Select…</option></select>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
       </div>
     </div>
-    <div class="hint" id="totalHint"></div>
 
-    <label for="remarks">Remarks (optional)</label>
-    <input type="text" id="remarks" placeholder="Anything the principal should know" />
+    <div class="section-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="3"/></svg>
+      Lesson
+    </div>
 
-    <button id="submitBtn">Submit entry</button>
+    <div class="field">
+      <label for="date">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="3"/></svg>
+        Date
+      </label>
+      <input type="date" id="date" />
+    </div>
+
+    <div class="field">
+      <label for="topic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+        Topic / lesson taught
+      </label>
+      <textarea id="topic" placeholder="e.g. Fractions – addition of unlike denominators"></textarea>
+    </div>
+
+    <div class="section-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Attendance
+    </div>
+
+    <div class="attendance-grid">
+      <div class="stepper present">
+        <div class="stepper-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Present
+        </div>
+        <div class="stepper-controls">
+          <button type="button" class="stepper-btn" data-target="present" data-delta="-1" aria-label="Decrease present">–</button>
+          <input type="number" id="present" min="0" inputmode="numeric" value="0" />
+          <button type="button" class="stepper-btn" data-target="present" data-delta="1" aria-label="Increase present">+</button>
+        </div>
+      </div>
+      <div class="stepper absent">
+        <div class="stepper-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          Absent
+        </div>
+        <div class="stepper-controls">
+          <button type="button" class="stepper-btn" data-target="absent" data-delta="-1" aria-label="Decrease absent">–</button>
+          <input type="number" id="absent" min="0" inputmode="numeric" value="0" />
+          <button type="button" class="stepper-btn" data-target="absent" data-delta="1" aria-label="Increase absent">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="total-chip" id="totalHint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      <span id="totalHintText"></span>
+    </div>
+
+    <div class="field">
+      <label for="remarks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Remarks <span style="color:var(--muted); font-weight:400;">(optional)</span>
+      </label>
+      <input type="text" id="remarks" placeholder="Anything the principal should know" />
+    </div>
+
+    <button id="submitBtn" type="submit">
+      <span class="spinner"></span>
+      <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      <span class="btn-text">Submit entry</span>
+    </button>
     <div id="status"></div>
-  </div>
+  </form>
 </main>
 
 <footer>
@@ -214,9 +513,9 @@
   document.getElementById('year').textContent = new Date().getFullYear();
 
   const els = {
+    form: document.getElementById('entryForm'),
     teacher: document.getElementById('teacher'),
     className: document.getElementById('className'),
-    section: document.getElementById('section'),
     period: document.getElementById('period'),
     subject: document.getElementById('subject'),
     date: document.getElementById('date'),
@@ -227,9 +526,13 @@
     submitBtn: document.getElementById('submitBtn'),
     status: document.getElementById('status'),
     totalHint: document.getElementById('totalHint'),
+    totalHintText: document.getElementById('totalHintText'),
     schoolName: document.getElementById('schoolName'),
     configBanner: document.getElementById('configBanner'),
   };
+
+  const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  const ICON_ERR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';
 
   // Default date to today, editable for backfilling a missed entry.
   els.date.value = new Date().toISOString().slice(0, 10);
@@ -248,10 +551,30 @@
   function updateTotalHint() {
     const p = Number(els.present.value) || 0;
     const a = Number(els.absent.value) || 0;
-    els.totalHint.textContent = (p || a) ? `Total in class: ${p + a}` : '';
+    if (p || a) {
+      els.totalHintText.textContent = `Total in class: ${p + a}`;
+      els.totalHint.classList.add('show');
+    } else {
+      els.totalHint.classList.remove('show');
+    }
   }
-  els.present.addEventListener('input', updateTotalHint);
-  els.absent.addEventListener('input', updateTotalHint);
+
+  function clampNonNegative(input) {
+    const v = Math.max(0, Number(input.value) || 0);
+    input.value = v;
+  }
+
+  els.present.addEventListener('input', () => { clampNonNegative(els.present); updateTotalHint(); });
+  els.absent.addEventListener('input', () => { clampNonNegative(els.absent); updateTotalHint(); });
+
+  document.querySelectorAll('.stepper-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = els[btn.dataset.target];
+      const delta = Number(btn.dataset.delta);
+      target.value = Math.max(0, (Number(target.value) || 0) + delta);
+      updateTotalHint();
+    });
+  });
 
   async function loadConfig() {
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('PASTE_YOUR') === 0) {
@@ -264,7 +587,6 @@
       if (!data.ok) throw new Error(data.error || 'Failed to load config');
       fillSelect(els.teacher, data.teachers);
       fillSelect(els.className, data.classes);
-      fillSelect(els.section, data.sections);
       fillSelect(els.period, data.periods);
       fillSelect(els.subject, data.subjects);
       if (data.schoolName) {
@@ -272,16 +594,24 @@
         document.title = data.schoolName + ' — Lesson Entry';
       }
     } catch (err) {
-      els.status.className = 'err';
-      els.status.textContent = 'Could not load form options. Check your internet connection.';
+      showStatus('err', 'Could not load form options. Check your internet connection.');
     }
+  }
+
+  function showStatus(kind, message) {
+    els.status.className = kind;
+    els.status.innerHTML = (kind === 'ok' ? ICON_OK : ICON_ERR) + `<span>${escapeHtml(message)}</span>`;
+  }
+
+  function clearStatus() {
+    els.status.className = '';
+    els.status.innerHTML = '';
   }
 
   async function submitEntry() {
     const payload = {
       teacher: els.teacher.value,
       className: els.className.value,
-      section: els.section.value,
       period: els.period.value,
       subject: els.subject.value,
       date: els.date.value,
@@ -292,14 +622,13 @@
     };
 
     if (!payload.teacher || !payload.className || !payload.period || !payload.topic) {
-      els.status.className = 'err';
-      els.status.textContent = 'Please fill teacher, class, period and topic.';
+      showStatus('err', 'Please fill teacher, class, period and topic.');
       return;
     }
 
     els.submitBtn.disabled = true;
-    els.status.className = '';
-    els.status.textContent = 'Submitting…';
+    els.submitBtn.classList.add('loading');
+    clearStatus();
 
     try {
       const res = await fetch(APPS_SCRIPT_URL, {
@@ -311,22 +640,25 @@
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || 'Save failed');
 
-      els.status.className = 'ok';
-      els.status.textContent = '✓ Entry saved. Thank you!';
+      showStatus('ok', 'Entry saved. Thank you!');
       els.topic.value = '';
-      els.present.value = '';
-      els.absent.value = '';
+      els.present.value = 0;
+      els.absent.value = 0;
       els.remarks.value = '';
       updateTotalHint();
     } catch (err) {
-      els.status.className = 'err';
-      els.status.textContent = 'Could not save. Check connection and try again.';
+      showStatus('err', 'Could not save. Check connection and try again.');
     } finally {
       els.submitBtn.disabled = false;
+      els.submitBtn.classList.remove('loading');
     }
   }
 
-  els.submitBtn.addEventListener('click', submitEntry);
+  els.form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitEntry();
+  });
+
   loadConfig();
 </script>
 
